@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">Glass Tuner</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">Hi, Matt!</string>
     <string name="action_settings">Settings</string>
-
+    <string name="glass_voice_trigger">tune an instrument</string>
+    <string name="glass_voice_prompt">which instrument you would like tuned?</string>
 </resources>

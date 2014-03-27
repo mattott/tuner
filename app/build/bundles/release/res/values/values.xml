@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/Users/mott/AndroidStudioProjects/GlassTuner1/app/src/main/res/values/arrays.xml -->
+    <eat-comment />
+
+    <integer-array name="background_colours">
+        <item>0xbf00ffff</item>
+        <item>0xbfbfffbf</item>
+        <item>0xbfffff00</item>
+        <item>0xbf0000ff</item>
+    </integer-array>
+    <integer-array name="divisors">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+    </integer-array>
+    <integer-array name="foreground_colours">
+        <item>0xbf0000ff</item>
+        <item>0xbf6f6f00</item>
+        <item>0xbfff00ff</item>
+        <item>0xbf0000ff</item>
+    </integer-array>
+
+    <string-array name="pref_colour_entries">
+        <item>Blue/Cyan (default)</item>
+        <item>Olive/Aquamarine</item>
+        <item>Magenta/Yellow</item>
+        <item>Custom</item>
+    </string-array>
+    <string-array name="pref_colour_entry_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="pref_input_entries">
+        <item>Default audio source</item>
+        <item>Microphone audio source</item>
+        <item>Voice call uplink + downlink audio source</item>
+        <item>Voice call downlink (Rx) audio source</item>
+        <item>Voice call uplink (Tx) audio source</item>
+        <item>Microphone audio source with same orientation as camera if available, the main device microphone otherwise</item>
+    </string-array>
+    <string-array name="pref_input_entry_values">
+        <item>0</item>
+        <item>1</item>
+        <item>4</item>
+        <item>3</item>
+        <item>2</item>
+        <item>5</item>
+    </string-array>
+
+    <integer-array name="sample_rates">
+        <item>11025</item>
+        <item>22050</item>
+        <item>44100</item>
+        <item>8000</item>
+        <item>16000</item>
+        <item>32000</item>
+    </integer-array>
+    <!-- From: file:/Users/mott/AndroidStudioProjects/GlassTuner1/app/src/main/res/values/attrs.xml -->
+    <eat-comment />
+
+    <declare-styleable name="NumberPickerPreference">
+        <attr name="maxValue" format="integer" />
+        <attr name="minValue" format="integer" />
+    </declare-styleable>
+    <!-- From: file:/Users/mott/AndroidStudioProjects/GlassTuner1/app/src/main/res/values/integers.xml -->
+    <eat-comment />
+
+    <integer name="def_input">0</integer>
+    <integer name="def_ref">440</integer>
+    <integer name="max_ref">450</integer>
+    <integer name="min_ref">430</integer>
+    <!-- From: file:/Users/mott/AndroidStudioProjects/GlassTuner1/app/src/main/res/values/strings.xml -->
+    <eat-comment />
+
+    <string name="app_name">Tuner</string>
+    <string name="copied_clip">Data copied to clipboard</string>
+    <string name="copyright">Copyright \u00A9 2013 Bill Farmer</string>
+    <string name="def_custom">[-1073807360,-1090518785]</string>
+    <string name="display">screen</string>
+    <string name="downsample">downsample</string>
+    <string name="downsample_off">Downsampling off</string>
+    <string name="downsample_on">Downsampling on</string>
+    <string name="error_buffer">Error from audio recording! Cannot find a working input sample rate.</string>
+    <string name="error_init">Audio recorder not initialised! Maybe the selected input source is not available, or a working input sample rate could not be found.</string>
+    <string name="filter">filter</string>
+    <string name="filter_off">Audio filter off</string>
+    <string name="filter_on">Audio filter on</string>
+    <string name="licence">Licence: GNU GPLv3</string>
+    <string name="lock">lock</string>
+    <string name="lock_off">Display lock off</string>
+    <string name="lock_on">Display lock on</string>
+    <string name="multiple">multiple</string>
+    <string name="multiple_off">Multiple notes off</string>
+    <string name="multiple_on">Multiple notes on</string>
+    <string name="pref_about">About</string>
+    <string name="pref_about_summ">Tuner version %s</string>
+    <string name="pref_colour">Strobe colours</string>
+    <string name="pref_colour_summ">Change the strobe colours</string>
+    <string name="pref_custom">Custom</string>
+    <string name="pref_custom_summ">Custom colours</string>
+    <string name="pref_display">Display</string>
+    <string name="pref_downsample">Downsample</string>
+    <string name="pref_downsample_summ">Downsample input before analysis</string>
+    <string name="pref_filter">Audio filter</string>
+    <string name="pref_filter_summ">Filter input audio</string>
+    <string name="pref_input">Input source</string>
+    <string name="pref_input_category">Input</string>
+    <string name="pref_input_summ">%s"</string>
+    <string name="pref_multiple">Multiple notes</string>
+    <string name="pref_multiple_summ">Show multiple notes on display</string>
+    <string name="pref_ref">Reference</string>
+    <string name="pref_ref_summ">%dHz</string>
+    <string name="pref_screen">Screen</string>
+    <string name="pref_screen_summ">Keep screen on</string>
+    <string name="pref_strobe">Strobe</string>
+    <string name="pref_strobe_screen">Strobe settings</string>
+    <string name="pref_strobe_summ">Show the strobe display</string>
+    <string name="pref_zoom">Zoom spectrum</string>
+    <string name="pref_zoom_summ">Zoom in to current note on spectrum display</string>
+    <string name="sample_rate">Sample rate: %1.0f samples/sec</string>
+    <string name="screen_off">Don\'t keep screen on</string>
+    <string name="screen_on">Keep screen on</string>
+    <string name="settings">Settings</string>
+    <string name="strobe">strobe</string>
+    <string name="strobe_off">Strobe off</string>
+    <string name="strobe_on">Strobe on</string>
+    <string name="zoom">zoom</string>
+    <string name="zoom_off">Spectrum zoom off</string>
+    <string name="zoom_on">Spectrum zoom on</string>
+    <!-- From: file:/Users/mott/AndroidStudioProjects/GlassTuner1/app/src/main/res/values/styles.xml -->
+    <eat-comment />
+
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+</resources>
