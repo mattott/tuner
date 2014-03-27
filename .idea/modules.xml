@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GlassTuner1.iml" filepath="$PROJECT_DIR$/GlassTuner1.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/glasstuner/glasstuner.iml" filepath="$PROJECT_DIR$/glasstuner/glasstuner.iml" />
     </modules>
   </component>
 </project>

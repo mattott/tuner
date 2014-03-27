@@ -37,8 +37,7 @@ import android.view.View;
 
 // Tuner View
 
-public abstract class TunerView extends View
-{
+public abstract class TunerView extends View {
     protected Audio audio;
     protected Resources resources;
 
@@ -50,50 +49,47 @@ public abstract class TunerView extends View
 
     // Constructor
 
-    protected TunerView(Context context, AttributeSet attrs)
-    {
-	super(context, attrs);
+    protected TunerView(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
-	paint = new Paint();
-	resources = getResources();
+        paint = new Paint();
+        resources = getResources();
     }
 
     // On Size Changed
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh)
-    {
-	// Save the new width and height
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        // Save the new width and height
 
-	width = w;
-	height = h;
+        width = w;
+        height = h;
 
-	// Create some rects for
-	// the outline and clipping
+        // Create some rects for
+        // the outline and clipping
 
-	outlineRect = new RectF(1, 1, width - 1, height - 1);
-	clipRect = new Rect(3, 3, width - 3, height - 3);
+        outlineRect = new RectF(1, 1, width - 1, height - 1);
+        clipRect = new Rect(3, 3, width - 3, height - 3);
     }
 
     // On Draw
 
     @Override
-    protected void onDraw(Canvas canvas)
-    {
-	// Set up the paint and draw the outline
+    protected void onDraw(Canvas canvas) {
+        // Set up the paint and draw the outline
 
-	paint.setStrokeWidth(3);
-	paint.setAntiAlias(true);
-	paint.setColor(resources.getColor(android.R.color.darker_gray));
-	paint.setStyle(Style.STROKE);
-	canvas.drawRoundRect(outlineRect, 10, 10, paint);
+        paint.setStrokeWidth(3);
+        paint.setAntiAlias(true);
+        paint.setColor(resources.getColor(android.R.color.darker_gray));
+        paint.setStyle(Style.STROKE);
+        canvas.drawRoundRect(outlineRect, 10, 10, paint);
 
-	// Set the cliprect
+        // Set the cliprect
 
-	canvas.clipRect(clipRect);
+        canvas.clipRect(clipRect);
 
-	// Translate to the clip rect
+        // Translate to the clip rect
 
-	canvas.translate(clipRect.left, clipRect.top);
+        canvas.translate(clipRect.left, clipRect.top);
     }
 }

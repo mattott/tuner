@@ -29,46 +29,42 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-public class SettingsActivity extends Activity
-{
+public class SettingsActivity extends Activity {
     // On create
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-	super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-	// Display the fragment as the main content.
+        // Display the fragment as the main content.
 
-	getFragmentManager().beginTransaction()
-	    .replace(android.R.id.content, new SettingsFragment())
-	    .commit();
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new SettingsFragment())
+                .commit();
 
-	// Enable back navigation on action bar
+        // Enable back navigation on action bar
 
-	ActionBar actionBar = getActionBar();
-	actionBar.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
     }
 
     // On options item selected
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-	// Switch on item id
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Switch on item id
 
-	switch (item.getItemId())
-	{
-	case android.R.id.home:
-	    // app icon in action bar clicked; go home
-	    Intent intent = new Intent(this, MainActivity.class);
-	    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	    startActivity(intent);
-	    return true;
-	default:
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
+            default:
 
-	    return super.onOptionsItemSelected(item);
-	}
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

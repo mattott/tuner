@@ -34,8 +34,7 @@ import android.view.View;
 
 // Colour picker preference
 
-public class ColourPickerPreference extends DialogPreference
-{
+public class ColourPickerPreference extends DialogPreference {
     private JSONArray mColours;
     private StrobeView mStrobe;
     private ColourPicker mForegroundPicker;
@@ -43,134 +42,108 @@ public class ColourPickerPreference extends DialogPreference
 
     // Constructor
 
-    public ColourPickerPreference(Context context, AttributeSet attrs)
-    {
-	super(context, attrs);
+    public ColourPickerPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     // On bind dialog view
 
     @Override
-    protected void onBindDialogView(View view)
-    {
-	super.onBindDialogView(view);
+    protected void onBindDialogView(View view) {
+        super.onBindDialogView(view);
 
-	// Get the views
+        // Get the views
 
-	mStrobe = (StrobeView)view.findViewById(R.id.strobe);
-	mForegroundPicker =
-	    (ColourPicker)view.findViewById(R.id.foreground_picker);
-	mBackgroundPicker =
-	    (ColourPicker)view.findViewById(R.id.background_picker);
+        mStrobe = (StrobeView) view.findViewById(R.id.strobe);
+        mForegroundPicker =
+                (ColourPicker) view.findViewById(R.id.foreground_picker);
+        mBackgroundPicker =
+                (ColourPicker) view.findViewById(R.id.background_picker);
 
-	// Set the picker colours
+        // Set the picker colours
 
-	try
-	{
-	    mForegroundPicker.setColour(mColours.getInt(0));
-	    mBackgroundPicker.setColour(mColours.getInt(1));
-	}
+        try {
+            mForegroundPicker.setColour(mColours.getInt(0));
+            mBackgroundPicker.setColour(mColours.getInt(1));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-	catch (JSONException e)
-	{
-	    e.printStackTrace();
-	}
+        // Set the dummy strobe colours
 
-	// Set the dummy strobe colours
+        mStrobe.foreground = mForegroundPicker.getColour();
+        mStrobe.background = mBackgroundPicker.getColour();
 
-	mStrobe.foreground = mForegroundPicker.getColour();
-	mStrobe.background = mBackgroundPicker.getColour();
+        // Set the listeners
 
-	// Set the listeners
+        mForegroundPicker.setListener(new ColourPicker.ColourChangeListener() {
+            public void onColourChanged(int c) {
+                mStrobe.foreground = c;
+                mStrobe.createShaders();
+            }
+        });
 
-	mForegroundPicker.setListener(new ColourPicker.ColourChangeListener()
-	    {
-		public void onColourChanged(int c)
-		{
-		    mStrobe.foreground = c;
-		    mStrobe.createShaders();
-		}
-	    });
-
-	mBackgroundPicker.setListener(new ColourPicker.ColourChangeListener()
-	    {
-		public void onColourChanged(int c)
-		{
-		    mStrobe.background = c;
-		    mStrobe.createShaders();
-		}
-	    });
+        mBackgroundPicker.setListener(new ColourPicker.ColourChangeListener() {
+            public void onColourChanged(int c) {
+                mStrobe.background = c;
+                mStrobe.createShaders();
+            }
+        });
     }
 
     // On get default value
 
     @Override
-    protected Object onGetDefaultValue(TypedArray a, int index)
-    {
-	return a.getString(index);
+    protected Object onGetDefaultValue(TypedArray a, int index) {
+        return a.getString(index);
     }
 
     // On set initial value
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue,
-				     Object defaultValue)
-    {
-	if (restorePersistedValue)
-	{
-	    // Restore existing state
+                                     Object defaultValue) {
+        if (restorePersistedValue) {
+            // Restore existing state
 
-	    try
-	    {
-		mColours = new JSONArray(getPersistedString(null));
-	    }
+            try {
+                mColours = new JSONArray(getPersistedString(null));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Set default state from the XML attribute
 
-	    catch (JSONException e)
-	    {
-		e.printStackTrace();
-	    }
-	}
+            try {
+                mColours = new JSONArray((String) defaultValue);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-	else
-	{
-	    // Set default state from the XML attribute
-
-	    try
-	    {
-		mColours = new JSONArray((String)defaultValue);
-	    }
-
-	    catch (JSONException e)
-	    {
-		e.printStackTrace();
-	    }
-
-	    persistString(mColours.toString());
-	}
+            persistString(mColours.toString());
+        }
     }
 
     // On dialog closed
 
     @Override
-    protected void onDialogClosed(boolean positiveResult)
-    {
-	// When the user selects "OK", persist the new value
+    protected void onDialogClosed(boolean positiveResult) {
+        // When the user selects "OK", persist the new value
 
-	if (positiveResult)
-	{
-	    // Change the dummy strobe colours
+        if (positiveResult) {
+            // Change the dummy strobe colours
 
-	    mStrobe.foreground = mForegroundPicker.getColour();
-	    mStrobe.background = mBackgroundPicker.getColour();
+            mStrobe.foreground = mForegroundPicker.getColour();
+            mStrobe.background = mBackgroundPicker.getColour();
 
-	    mColours = new JSONArray();
+            mColours = new JSONArray();
 
-	    // Save the colours
+            // Save the colours
 
-	    mColours.put(mForegroundPicker.getColour());
-	    mColours.put(mBackgroundPicker.getColour());
+            mColours.put(mForegroundPicker.getColour());
+            mColours.put(mBackgroundPicker.getColour());
 
-	    persistString(mColours.toString());
-	}
+            persistString(mColours.toString());
+        }
     }
 }

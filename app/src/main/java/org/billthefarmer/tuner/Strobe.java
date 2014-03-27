@@ -45,15 +45,14 @@ import android.util.AttributeSet;
 // Strobe
 
 public class Strobe extends TunerView
-    implements AnimatorUpdateListener
-{
+        implements AnimatorUpdateListener {
     protected int colour;
     protected int foreground;
     protected int background;
 
     private int fore[];
     private int back[];
-    
+
     private static final int CUSTOM = 3;
 
     private static final float SLOW = 20;
@@ -86,272 +85,249 @@ public class Strobe extends TunerView
 
     // Constructor
 
-    public Strobe(Context context, AttributeSet attrs)
-    {
-	super(context, attrs);
+    public Strobe(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     // On size changed
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh)
-    {
-	super.onSizeChanged(w, h, oldw, oldh);
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
 
-	// Recalculate dimensions
+        // Recalculate dimensions
 
-	width = clipRect.right - clipRect.left;
-	height = clipRect.bottom - clipRect.top;
+        width = clipRect.right - clipRect.left;
+        height = clipRect.bottom - clipRect.top;
 
-	// Calculate size and scale
+        // Calculate size and scale
 
-	size = height / 4;
-	scale = width / SCALE_VALUE;
+        size = height / 4;
+        scale = width / SCALE_VALUE;
 
-	// Create rounded bitmap
+        // Create rounded bitmap
 
-	rounded = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-	Canvas canvas = new Canvas(rounded);
-	paint.setColor(Color.WHITE);
-	canvas.drawRoundRect(new RectF(0, 0, width, height), 10, 10, paint);	
+        rounded = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+        Canvas canvas = new Canvas(rounded);
+        paint.setColor(Color.WHITE);
+        canvas.drawRoundRect(new RectF(0, 0, width, height), 10, 10, paint);
 
-	// Create magic paint
+        // Create magic paint
 
-	xferPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-	xferPaint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
+        xferPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        xferPaint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
 
-	// Create a bitmap to draw on
+        // Create a bitmap to draw on
 
-	bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-	source = new Canvas(bitmap);
+        bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+        source = new Canvas(bitmap);
 
-	// Create matrix for translating shaders
+        // Create matrix for translating shaders
 
-	matrix = new Matrix();
+        matrix = new Matrix();
 
-	// Create animator
+        // Create animator
 
-	animator = ValueAnimator.ofInt(0, 10000);
-	animator.setRepeatCount(ValueAnimator.INFINITE);
-	animator.setRepeatMode(ValueAnimator.RESTART);
-	animator.setDuration(10000);
-	
-	animator.addUpdateListener(this);
+        animator = ValueAnimator.ofInt(0, 10000);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.RESTART);
+        animator.setDuration(10000);
 
-	animator.start();
+        animator.addUpdateListener(this);
 
-	// Create the shaders
+        animator.start();
 
-	createShaders();
+        // Create the shaders
+
+        createShaders();
     }
 
     // Animation update
 
     @Override
-    public void onAnimationUpdate(ValueAnimator animator)
-    {
-	// Do inertia calculation
+    public void onAnimationUpdate(ValueAnimator animator) {
+        // Do inertia calculation
 
-	if (audio != null)
-	    cents = (cents * 19.0 + audio.cents) / 20.0;
+        if (audio != null)
+            cents = (cents * 19.0 + audio.cents) / 20.0;
 
-	invalidate();
+        invalidate();
     }
 
     // Create shaders
 
-    protected void createShaders()
-    {
-	// Get the colours
+    protected void createShaders() {
+        // Get the colours
 
-	if (audio != null)
-	{
-	    Resources resources = getResources();
+        if (audio != null) {
+            Resources resources = getResources();
 
-	    fore = resources.getIntArray(R.array.foreground_colours);
-	    back = resources.getIntArray(R.array.background_colours);
+            fore = resources.getIntArray(R.array.foreground_colours);
+            back = resources.getIntArray(R.array.background_colours);
 
-	    if (colour < CUSTOM)
-	    {
-		foreground = fore[colour];
-		background = back[colour];
-	    }
-	}
+            if (colour < CUSTOM) {
+                foreground = fore[colour];
+                background = back[colour];
+            }
+        }
 
-	// Create the bitmap shaders
+        // Create the bitmap shaders
 
-	smallShader =
-	    new BitmapShader(createShaderBitmap(size,
-						size, foreground, background),
-			     TileMode.REPEAT, TileMode.CLAMP);
-	mediumShader =
-	    new BitmapShader(createShaderBitmap(size * 2,
-						size, foreground, background),
-			     TileMode.REPEAT, TileMode.CLAMP);
-	largeShader =
-	    new BitmapShader(createShaderBitmap(size * 4,
-						size, foreground, background),
-			     TileMode.REPEAT, TileMode.CLAMP);
-	largerShader =
-	    new BitmapShader(createShaderBitmap(size * 8,
-						size, foreground, background),
-			     TileMode.REPEAT, TileMode.CLAMP);
+        smallShader =
+                new BitmapShader(createShaderBitmap(size,
+                        size, foreground, background),
+                        TileMode.REPEAT, TileMode.CLAMP
+                );
+        mediumShader =
+                new BitmapShader(createShaderBitmap(size * 2,
+                        size, foreground, background),
+                        TileMode.REPEAT, TileMode.CLAMP
+                );
+        largeShader =
+                new BitmapShader(createShaderBitmap(size * 4,
+                        size, foreground, background),
+                        TileMode.REPEAT, TileMode.CLAMP
+                );
+        largerShader =
+                new BitmapShader(createShaderBitmap(size * 8,
+                        size, foreground, background),
+                        TileMode.REPEAT, TileMode.CLAMP
+                );
 
-	// Create the gradients
+        // Create the gradients
 
-	smallGradient = new LinearGradient(0, 0, size, 0,
-					   background, foreground,
-					   TileMode.MIRROR);
-	mediumGradient = new LinearGradient(0, 0, size * 2, 0,
-					    background, foreground,
-					    TileMode.MIRROR);
-	largeGradient = new LinearGradient(0, 0, size * 4, 0,
-					   background, foreground,
-					   TileMode.MIRROR);
+        smallGradient = new LinearGradient(0, 0, size, 0,
+                background, foreground,
+                TileMode.MIRROR);
+        mediumGradient = new LinearGradient(0, 0, size * 2, 0,
+                background, foreground,
+                TileMode.MIRROR);
+        largeGradient = new LinearGradient(0, 0, size * 4, 0,
+                background, foreground,
+                TileMode.MIRROR);
 
-	// Calculate intermediate colours for the small gradient
+        // Calculate intermediate colours for the small gradient
 
-	int red = (Color.red(foreground) + Color.red(background)) / 2;
-	int green = (Color.green(foreground) + Color.green(background)) / 2;
-	int blue = (Color.blue(foreground) + Color.blue(background)) / 2;
+        int red = (Color.red(foreground) + Color.red(background)) / 2;
+        int green = (Color.green(foreground) + Color.green(background)) / 2;
+        int blue = (Color.blue(foreground) + Color.blue(background)) / 2;
 
-	smallBlurGradient =
-	    new LinearGradient(0, 0, size, 0,
-			       background,
-			       Color.argb(191, red, green, blue),
-			       TileMode.MIRROR);
+        smallBlurGradient =
+                new LinearGradient(0, 0, size, 0,
+                        background,
+                        Color.argb(191, red, green, blue),
+                        TileMode.MIRROR);
     }
 
     // Create shader bitmap
 
-    private Bitmap createShaderBitmap(int width, int height, int f, int b)
-    {
-	// Create bitmap twice as wide as the block
+    private Bitmap createShaderBitmap(int width, int height, int f, int b) {
+        // Create bitmap twice as wide as the block
 
-	Bitmap bitmap =
-	    Bitmap.createBitmap(width * 2, height, Config.ARGB_8888);
-	Canvas canvas = new Canvas(bitmap);
-	Paint paint = new Paint();
+        Bitmap bitmap =
+                Bitmap.createBitmap(width * 2, height, Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
 
-	// Draw the bitmap
+        // Draw the bitmap
 
-	canvas.drawColor(b);
-	paint.setColor(f);
-	canvas.drawRect(0, 0, width, height, paint);
+        canvas.drawColor(b);
+        paint.setColor(f);
+        canvas.drawRect(0, 0, width, height, paint);
 
-	return bitmap;
+        return bitmap;
     }
 
     // On draw
 
     @Override
-    protected void onDraw(Canvas canvas)
-    {
-	super.onDraw(canvas);
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
 
-	// Don't draw if turned off
+        // Don't draw if turned off
 
-	if (audio == null || !audio.strobe)
-	    return;
+        if (audio == null || !audio.strobe)
+            return;
 
-	// Calculate offset
+        // Calculate offset
 
-	offset = offset + ((float)cents * scale);
+        offset = offset + ((float) cents * scale);
 
-	if (offset > size * 16)
-	    offset = 0;
+        if (offset > size * 16)
+            offset = 0;
 
-	if (offset < 0)
-	    offset = size * 16;
+        if (offset < 0)
+            offset = size * 16;
 
-	// Draw strobe
+        // Draw strobe
 
-	drawStrobe(source);
+        drawStrobe(source);
 
-	// Use the magic paint
+        // Use the magic paint
 
-	source.drawBitmap(rounded, 0, 0, xferPaint);
+        source.drawBitmap(rounded, 0, 0, xferPaint);
 
-	// Draw the result on the canvas
+        // Draw the result on the canvas
 
-	canvas.drawBitmap(bitmap, 0, 0, null);
-	paint.setShader(null);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+        paint.setShader(null);
     }
 
     // Draw strobe
 
-    private void drawStrobe(Canvas canvas)
-    {
-	// Reset the paint
+    private void drawStrobe(Canvas canvas) {
+        // Reset the paint
 
-	paint.setStrokeWidth(1);
-	paint.setAntiAlias(true);
-	paint.setStyle(Style.FILL);
+        paint.setStrokeWidth(1);
+        paint.setAntiAlias(true);
+        paint.setStyle(Style.FILL);
 
-	// Translate
+        // Translate
 
-	matrix.setTranslate(offset, 0);
+        matrix.setTranslate(offset, 0);
 
-	// Draw the strobe chequers
+        // Draw the strobe chequers
 
-	if (Math.abs(cents) < SLOW)
-	{
-	    smallShader.setLocalMatrix(matrix);
-	    paint.setShader(smallShader);
-	    canvas.drawRect(0, 0, width, size, paint);
-	}
+        if (Math.abs(cents) < SLOW) {
+            smallShader.setLocalMatrix(matrix);
+            paint.setShader(smallShader);
+            canvas.drawRect(0, 0, width, size, paint);
+        } else if (Math.abs(cents) < MEDIUM) {
+            smallGradient.setLocalMatrix(matrix);
+            paint.setShader(smallGradient);
+            canvas.drawRect(0, 0, width, size, paint);
+        } else if (Math.abs(cents) < FAST) {
+            smallBlurGradient.setLocalMatrix(matrix);
+            paint.setShader(smallBlurGradient);
+            canvas.drawRect(0, 0, width, size, paint);
+        } else {
+            paint.setShader(null);
+            paint.setColor(background);
+            canvas.drawRect(0, 0, width, size, paint);
+        }
 
-	else if (Math.abs(cents) < MEDIUM)
-	{
-	    smallGradient.setLocalMatrix(matrix);
-	    paint.setShader(smallGradient);
-	    canvas.drawRect(0, 0, width, size, paint);
-	}
+        if (Math.abs(cents) < MEDIUM) {
+            mediumShader.setLocalMatrix(matrix);
+            paint.setShader(mediumShader);
+            canvas.drawRect(0, size, width, size * 2, paint);
+        } else {
+            mediumGradient.setLocalMatrix(matrix);
+            paint.setShader(mediumGradient);
+            canvas.drawRect(0, size, width, size * 2, paint);
+        }
 
-	else if (Math.abs(cents) < FAST)
-	{
-	    smallBlurGradient.setLocalMatrix(matrix);
-	    paint.setShader(smallBlurGradient);
-	    canvas.drawRect(0, 0, width, size, paint);
-	}
+        if (Math.abs(cents) < FAST) {
+            largeShader.setLocalMatrix(matrix);
+            paint.setShader(largeShader);
+            canvas.drawRect(0, size * 2, width, size * 3, paint);
+        } else {
+            largeGradient.setLocalMatrix(matrix);
+            paint.setShader(largeGradient);
+            canvas.drawRect(0, size * 2, width, size * 3, paint);
+        }
 
-	else
-	{
-	    paint.setShader(null);
-	    paint.setColor(background);
-	    canvas.drawRect(0, 0, width, size, paint);
-	}
-
-	if (Math.abs(cents) < MEDIUM)
-	{
-	    mediumShader.setLocalMatrix(matrix);
-	    paint.setShader(mediumShader);
-	    canvas.drawRect(0, size, width, size * 2, paint);
-	}
-
-	else
-	{
-	    mediumGradient.setLocalMatrix(matrix);
-	    paint.setShader(mediumGradient);
-	    canvas.drawRect(0, size, width, size * 2, paint);
-	}
-
-	if (Math.abs(cents) < FAST)
-	{
-	    largeShader.setLocalMatrix(matrix);
-	    paint.setShader(largeShader);
-	    canvas.drawRect(0, size * 2, width, size * 3, paint);
-	}
-
-	else
-	{
-	    largeGradient.setLocalMatrix(matrix);
-	    paint.setShader(largeGradient);
-	    canvas.drawRect(0, size * 2, width, size * 3, paint);
-	}
-
-	largerShader.setLocalMatrix(matrix);
-	paint.setShader(largerShader);
-	canvas.drawRect(0, size * 3, width, size * 4, paint);
+        largerShader.setLocalMatrix(matrix);
+        paint.setShader(largerShader);
+        canvas.drawRect(0, size * 3, width, size * 4, paint);
     }
 }

@@ -32,8 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 
-public class NumberPickerPreference extends DialogPreference
-{
+public class NumberPickerPreference extends DialogPreference {
     private final int mMaxValue;
     private final int mMinValue;
 
@@ -43,95 +42,82 @@ public class NumberPickerPreference extends DialogPreference
 
     // Constructors
 
-    public NumberPickerPreference(Context context, AttributeSet attrs)
-    {
-	super(context, attrs);
+    public NumberPickerPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
-	TypedArray a =
-	    context.obtainStyledAttributes(attrs,
-					   R.styleable.NumberPickerPreference);
-	mMaxValue =
-	    a.getInt(R.styleable.NumberPickerPreference_maxValue, 0);
-	mMinValue =
-	    a.getInt(R.styleable.NumberPickerPreference_minValue, 0);
-	a.recycle();
+        TypedArray a =
+                context.obtainStyledAttributes(attrs,
+                        R.styleable.NumberPickerPreference);
+        mMaxValue =
+                a.getInt(R.styleable.NumberPickerPreference_maxValue, 0);
+        mMinValue =
+                a.getInt(R.styleable.NumberPickerPreference_minValue, 0);
+        a.recycle();
     }
 
     // On create dialog view
 
     @Override
-    protected View onCreateDialogView()
-    {
-	mPicker = new NumberPicker(getContext());
+    protected View onCreateDialogView() {
+        mPicker = new NumberPicker(getContext());
 
-	mPicker.setMaxValue(mMaxValue);
-	mPicker.setMinValue(mMinValue);
-	mPicker.setValue(mValue);
+        mPicker.setMaxValue(mMaxValue);
+        mPicker.setMinValue(mMinValue);
+        mPicker.setValue(mValue);
 
-	mPicker.setFormatter(new NumberPicker.Formatter()
-	    {
-		@SuppressLint("DefaultLocale")
-		@Override
-		public String format(int value)
-		{
-		    return String.format("%dHz", value);
-		}
-	    });
+        mPicker.setFormatter(new NumberPicker.Formatter() {
+            @SuppressLint("DefaultLocale")
+            @Override
+            public String format(int value) {
+                return String.format("%dHz", value);
+            }
+        });
 
-	mPicker.setWrapSelectorWheel(false);
-	mPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        mPicker.setWrapSelectorWheel(false);
+        mPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
-	return mPicker;
+        return mPicker;
     }
 
     // On get default value
 
     @Override
-    protected Object onGetDefaultValue(TypedArray a, int index)
-    {
-	return a.getInteger(index, mValue);
+    protected Object onGetDefaultValue(TypedArray a, int index) {
+        return a.getInteger(index, mValue);
     }
 
     // On set initial value
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue,
-				     Object defaultValue)
-    {
-	if (restorePersistedValue)
-	{
-	    // Restore existing state
+                                     Object defaultValue) {
+        if (restorePersistedValue) {
+            // Restore existing state
 
-	    mValue = getPersistedInt(0);
-	}
+            mValue = getPersistedInt(0);
+        } else {
+            // Set default state from the XML attribute
 
-	else
-	{
-	    // Set default state from the XML attribute
-
-	    mValue = (Integer) defaultValue;
-	    persistInt(mValue);
-	}
+            mValue = (Integer) defaultValue;
+            persistInt(mValue);
+        }
     }
 
     // On dialog closed
 
     @Override
-    protected void onDialogClosed(boolean positiveResult)
-    {
-	// When the user selects "OK", persist the new value
+    protected void onDialogClosed(boolean positiveResult) {
+        // When the user selects "OK", persist the new value
 
-	if (positiveResult)
-	{
-	    mValue = mPicker.getValue();
-	    persistInt(mValue);
-	}
+        if (positiveResult) {
+            mValue = mPicker.getValue();
+            persistInt(mValue);
+        }
     }
 
     // Get value
 
-    protected int getValue()
-    {
-	return mValue;
+    protected int getValue() {
+        return mValue;
     }
 }
