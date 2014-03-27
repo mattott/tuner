@@ -136,23 +136,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="strings.xml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="strings.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/glasstuner/src/main/res/values/strings.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.14705883" vertical-offset="0" max-vertical-offset="714">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="225">
               <caret line="7" column="76" selection-start-line="7" selection-start-column="76" selection-end-line="7" selection-end-column="76" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tuner_trigger.xml" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="tuner_trigger.xml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/glasstuner/src/main/res/xml/tuner_trigger.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="150">
-              <caret line="3" column="45" selection-start-line="3" selection-start-column="45" selection-end-line="3" selection-end-column="45" />
+            <state vertical-scroll-proportion="0.084033616" vertical-offset="0" max-vertical-offset="714">
+              <caret line="4" column="34" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
               <folding>
                 <element signature="e#57#86#0" expanded="true" />
+                <element signature="e#106#134#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1311,9 +1312,9 @@
         <option value="$PROJECT_DIR$/app/src/main/res/xml/preferences.xml" />
         <option value="$PROJECT_DIR$/glasstuner/src/main/res/layout/glass_activity_main.xml" />
         <option value="$PROJECT_DIR$/glasstuner/src/main/java/com/ottmatt/glasstuner/MainActivity.java" />
-        <option value="$PROJECT_DIR$/glasstuner/src/main/res/xml/tuner_trigger.xml" />
         <option value="$PROJECT_DIR$/glasstuner/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/glasstuner/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/glasstuner/src/main/res/xml/tuner_trigger.xml" />
       </list>
     </option>
   </component>
@@ -2181,16 +2182,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/glasstuner/src/main/res/xml/tuner_trigger.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="150">
-          <caret line="3" column="45" selection-start-line="3" selection-start-column="45" selection-end-line="3" selection-end-column="45" />
-          <folding>
-            <element signature="e#57#86#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/glasstuner/src/main/res/layout/activity_main.xml">
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
@@ -2220,9 +2211,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/glasstuner/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.14705883" vertical-offset="0" max-vertical-offset="714">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="225">
           <caret line="7" column="76" selection-start-line="7" selection-start-column="76" selection-end-line="7" selection-end-column="76" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/glasstuner/src/main/res/xml/tuner_trigger.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.084033616" vertical-offset="0" max-vertical-offset="714">
+          <caret line="4" column="34" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
+          <folding>
+            <element signature="e#57#86#0" expanded="true" />
+            <element signature="e#106#134#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

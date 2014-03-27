@@ -2,4 +2,5 @@
 
 <trigger keyword="@string/glass_voice_trigger">
     <input prompt="@string/glass_voice_prompt"/>
+    <constraints microphone="true"/>
 </trigger>
