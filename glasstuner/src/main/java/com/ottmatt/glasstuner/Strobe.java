@@ -21,7 +21,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-package org.billthefarmer.tuner;
+package com.ottmatt.glasstuner;
 
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -35,10 +35,10 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
 import android.graphics.Paint.Style;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.graphics.Shader.TileMode;
 import android.util.AttributeSet;
 
@@ -162,8 +162,8 @@ public class Strobe extends TunerView
         if (audio != null) {
             Resources resources = getResources();
 
-            fore = resources.getIntArray(R.array.foreground_colours);
-            back = resources.getIntArray(R.array.background_colours);
+            fore = resources.getIntArray(org.billthefarmer.tuner.R.array.foreground_colours);
+            back = resources.getIntArray(org.billthefarmer.tuner.R.array.background_colours);
 
             if (colour < CUSTOM) {
                 foreground = fore[colour];
@@ -240,7 +240,8 @@ public class Strobe extends TunerView
 
     // On draw
 
-    @Override protected void onDraw(Canvas canvas) {
+    @Override
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         // Don't draw if turned off
