@@ -72,11 +72,11 @@ public class Spectrum extends Graticule {
             canvas.drawText("D", 4, height - 2, paint);
         }
 
-        // Translate camvas
+        // Translate canvas
 
         canvas.translate(0, height);
 
-        // Chack max value
+        // Check max value
 
         if (max < 1.0f)
             max = 1.0f;

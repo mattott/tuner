@@ -1,17 +1,26 @@
 package com.ottmatt.glasstuner;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.Window;
+import android.view.WindowManager;
 
 public class MainActivity extends Activity {
+
+    private static final String PREF_INPUT = "pref_input";
+    private static final String PREF_REFERENCE = "pref_reference";
+    private static final String PREF_FILTER = "pref_filter";
+    private static final String PREF_DOWNSAMPLE = "pref_downsample";
+    private static final String PREF_MULTIPLE = "pref_multiple";
+    private static final String PREF_SCREEN = "pref_screen";
+    private static final String PREF_STROBE = "pref_strobe";
+    private static final String PREF_ZOOM = "pref_zoom";
 
     private Audio audio;
     private Spectrum spectrum;
     private Display display;
-    private Strobe strobe;
-    private Status status;
-    private Meter meter;
-    private Scope scope;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +29,9 @@ public class MainActivity extends Activity {
 
         spectrum = (Spectrum) findViewById(org.billthefarmer.tuner.R.id.spectrum);
         display = (Display) findViewById(org.billthefarmer.tuner.R.id.display);
-        scope = (Scope) findViewById(org.billthefarmer.tuner.R.id.scope);
 
         // Create audio
-        audio = new Audio(getResources(), spectrum, display, scope);
+        audio = new Audio(getResources(), spectrum, display);
 
         // Connect views to audio
 
@@ -33,28 +41,13 @@ public class MainActivity extends Activity {
         if (display != null)
             display.setAudio(audio);
 
-        if (strobe != null)
-            strobe.setAudio(audio);
-
-        if (status != null)
-            status.setAudio(audio);
-
-        if (meter != null)
-            meter.setAudio(audio);
-
-        if (scope != null)
-            scope.setAudio(audio);
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        // Update status
-
-        if (status != null)
-            status.invalidate();
+        getPreferences();
 
         // Start the audio thread
 
@@ -64,6 +57,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        savePreferences();
         audio.stop();
     }
 
@@ -81,14 +75,62 @@ public class MainActivity extends Activity {
         super.onDestroy();
 
         audio = null;
-        scope = null;
         spectrum = null;
         display = null;
-        strobe = null;
-        meter = null;
-        status = null;
 
         // Hint that it might be a good idea
         System.runFinalization();
+    }
+
+    // Save preferences
+
+    void savePreferences() {
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putBoolean(PREF_FILTER, audio.filter);
+        editor.putBoolean(PREF_DOWNSAMPLE, audio.downsample);
+        editor.putBoolean(PREF_MULTIPLE, audio.multiple);
+        editor.putBoolean(PREF_SCREEN, audio.screen);
+        editor.putBoolean(PREF_STROBE, audio.strobe);
+        editor.putBoolean(PREF_ZOOM, audio.zoom);
+
+        editor.commit();
+    }
+
+    // Get preferences
+
+    void getPreferences() {
+        // Load preferences
+
+        PreferenceManager.setDefaultValues(this, org.billthefarmer.tuner.R.xml.preferences, false);
+
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Set preferences
+
+        if (audio != null) {
+            audio.input = Integer.parseInt(preferences.getString(PREF_INPUT, "0"));
+            audio.reference = preferences.getInt(PREF_REFERENCE, 440);
+            audio.filter = preferences.getBoolean(PREF_FILTER, false);
+            audio.downsample = preferences.getBoolean(PREF_DOWNSAMPLE, false);
+            audio.multiple = preferences.getBoolean(PREF_MULTIPLE, false);
+            audio.screen = preferences.getBoolean(PREF_SCREEN, false);
+            audio.strobe = preferences.getBoolean(PREF_STROBE, false);
+            audio.zoom = preferences.getBoolean(PREF_ZOOM, true);
+
+            // Check screen
+
+            if (audio.screen) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            } else {
+                Window window = getWindow();
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
+        }
     }
 }

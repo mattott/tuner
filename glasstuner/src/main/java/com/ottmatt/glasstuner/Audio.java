@@ -93,15 +93,13 @@ public class Audio  implements Runnable {
 
     private Spectrum spectrum;
     private Display display;
-    private Scope scope;
 
     // Constructor
 
-    protected Audio(Resources resources, Spectrum spectrum, Display display, Scope scope) {
+    protected Audio(Resources resources, Spectrum spectrum, Display display) {
         this.resources = resources;
         this.display = display;
         this.spectrum = spectrum;
-        this.scope = scope;
 
         buffer = new double[SAMPLES];
         data = new short[STEP];
@@ -162,17 +160,12 @@ public class Audio  implements Runnable {
         int size;
         for (int rate : rates) {
             sample = rate;
-            size =
-                    AudioRecord.getMinBufferSize((int) sample,
+            size = AudioRecord.getMinBufferSize((int) sample,
                             AudioFormat.CHANNEL_IN_MONO,
                             AudioFormat.ENCODING_PCM_16BIT);
-            if (size > 0)
+            if (size > 0) {
                 break;
-
-            if (size == AudioRecord.ERROR_BAD_VALUE)
-                continue;
-
-            if (size == AudioRecord.ERROR) {
+            } else if (size == AudioRecord.ERROR) {
                 Log.d(TAG, "Error from audio recording! Cannot find a working input sample rate.");
                 thread = null;
                 return;
@@ -194,13 +187,11 @@ public class Audio  implements Runnable {
         // Calculate fps
 
         fps = (sample / divisor) / SAMPLES;
-        final double expect = 2.0 * Math.PI *
-                STEP / SAMPLES;
+        final double expect = 2.0 * Math.PI * STEP / SAMPLES;
 
         // Create the AudioRecord object
 
-        audioRecord =
-                new AudioRecord(input, (int) sample,
+        audioRecord = new AudioRecord(input, (int) sample,
                         AudioFormat.CHANNEL_IN_MONO,
                         AudioFormat.ENCODING_PCM_16BIT,
                         SIZE * divisor);
@@ -292,9 +283,7 @@ public class Audio  implements Runnable {
 
                 // Calculate the window
 
-                double window =
-                        0.5 - 0.5 * Math.cos(2.0 * Math.PI *
-                                i / SAMPLES);
+                double window = 0.5 - 0.5 * Math.cos(2.0 * Math.PI * i / SAMPLES);
 
                 // Normalise and window the input data
 
@@ -536,6 +525,10 @@ public class Audio  implements Runnable {
                 // Difference
 
                 difference = frequency - nearest;
+
+                Log.d(TAG, "Found note: " + Integer.toString(note) + " but found was " + Boolean.toString(found));
+            } else {
+                Log.d(TAG, "Note wasn't found");
             }
 
             // Found
@@ -594,19 +587,19 @@ public class Audio  implements Runnable {
 
     // Real to complex FFT, ignores imaginary values in input array
 
-    private void fftr(Complex a) {
-        final int n = a.r.length;
+    private void fftr(Complex complex) {
+        final int n = complex.r.length;
         final double norm = Math.sqrt(1.0 / n);
 
         for (int i = 0, j = 0; i < n; i++) {
             if (j >= i) {
-                double tr = a.r[j] * norm;
+                double tr = complex.r[j] * norm;
 
-                a.r[j] = a.r[i] * norm;
-                a.i[j] = 0.0;
+                complex.r[j] = complex.r[i] * norm;
+                complex.i[j] = 0.0;
 
-                a.r[i] = tr;
-                a.i[i] = 0.0;
+                complex.r[i] = tr;
+                complex.i[i] = 0.0;
             }
 
             int m = n / 2;
@@ -627,12 +620,12 @@ public class Audio  implements Runnable {
 
                 for (int i = m; i < n; i += istep) {
                     int j = i + mmax;
-                    double tr = wr * a.r[j] - wi * a.i[j];
-                    double ti = wr * a.i[j] + wi * a.r[j];
-                    a.r[j] = a.r[i] - tr;
-                    a.i[j] = a.i[i] - ti;
-                    a.r[i] += tr;
-                    a.i[i] += ti;
+                    double tr = wr * complex.r[j] - wi * complex.i[j];
+                    double ti = wr * complex.i[j] + wi * complex.r[j];
+                    complex.r[j] = complex.r[i] - tr;
+                    complex.i[j] = complex.i[i] - ti;
+                    complex.r[i] += tr;
+                    complex.i[i] += ti;
                 }
             }
         }
@@ -645,7 +638,7 @@ public class Audio  implements Runnable {
     }
 
     // These two objects replace arrays of structs in the C version
-// because initialising arrays of objects in Java is, IMHO, barmy
+    // because initialising arrays of objects in Java is, IMHO, barmy
 
 // Complex
 
