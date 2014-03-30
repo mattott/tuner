@@ -3,12 +3,14 @@ package com.ottmatt.glasstuner;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class MainActivity extends Activity {
 
+    private static final String TAG = "MainActivity";
     private static final String PREF_INPUT = "pref_input";
     private static final String PREF_REFERENCE = "pref_reference";
     private static final String PREF_FILTER = "pref_filter";
@@ -17,6 +19,8 @@ public class MainActivity extends Activity {
     private static final String PREF_SCREEN = "pref_screen";
     private static final String PREF_STROBE = "pref_strobe";
     private static final String PREF_ZOOM = "pref_zoom";
+
+    private PowerManager.WakeLock mWakeLock;
 
     private Audio audio;
     private Spectrum spectrum;
@@ -40,6 +44,10 @@ public class MainActivity extends Activity {
 
         if (display != null)
             display.setAudio(audio);
+
+        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, TAG);
+        mWakeLock.acquire();
 
     }
 
@@ -74,6 +82,7 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
 
+        mWakeLock.release();
         audio = null;
         spectrum = null;
         display = null;
