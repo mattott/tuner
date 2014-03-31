@@ -160,7 +160,6 @@ public class Meter extends TunerView
 
         // Draw the scale
         canvas.drawArc(meterRect, 0, -180, false, paint);
-        canvas.drawLine(width/2, width/2 - 20, width/2, width/2 +20, paint);
 
         // Draw the needle
         canvas.drawLine(width/2, 0, xLocation + width/2, -yLocation, paint);
