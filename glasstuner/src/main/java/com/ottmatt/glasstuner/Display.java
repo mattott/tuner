@@ -23,39 +23,28 @@
 
 package com.ottmatt.glasstuner;
 
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
-import android.graphics.Path;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
 // Display
 
-public class Display extends TunerView
-        implements ValueAnimator.AnimatorUpdateListener {
+public class Display extends TunerView {
     private static final int OCTAVE = 12;
 
+    private int larger;
     private int large;
     private int medium;
     private int small;
 
     private int margin;
-    private double cents;
-
-    private Rect barRect;
-    private Path path;
-    private Matrix matrix;
-    private ValueAnimator animator;
-
+    private Bitmap bitmap;
 
     // Note values for display
 
@@ -71,38 +60,17 @@ public class Display extends TunerView
 
     public Display(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initMeter();
+
+        bitmap = BitmapFactory.decodeResource(resources,
+                org.billthefarmer.tuner.R.drawable.ic_locked);
     }
 
-    private void initMeter() {
-        path = new Path();
-        path.moveTo(0, -1);
-        path.lineTo(1, 0);
-        path.lineTo(1, 1);
-        path.lineTo(-1, 1);
-        path.lineTo(-1, 0);
-        path.close();
-        matrix = new Matrix();
-    }
-
-    @Override
-    public void onAnimationUpdate(ValueAnimator animator) {
-        // Do the inertia calculation
-        if (audio != null) {
-            cents = ((cents * 19.0) + audio.cents) / 20.0;
-        }
-        invalidate();
-    }
+    // On size changed
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        setNoteSize();
-        setMeterSize();
-    }
-
-    private void setNoteSize() {
         // Recalculate dimensions
 
         width = clipRect.right - clipRect.left;
@@ -110,6 +78,7 @@ public class Display extends TunerView
 
         // Calculate text sizes
 
+        larger = height / 2;
         large = height / 3;
         medium = height / 5;
         small = height / 9;
@@ -118,38 +87,17 @@ public class Display extends TunerView
         // Make sure the text will fit the width
 
         paint.setTextSize(medium);
-        // Scale text if necessary to fit it in
+        float dx = paint.measureText("0000.00Hz");
 
-        float dx = paint.measureText("50");
-        if (dx >= width / 11)
-            paint.setTextScaleX((width / 12) / dx);
+        // Scale the text if it won't fit
+
+        if (dx + (margin * 2) >= width / 2) {
+            float xscale = (width / 2) / (dx + (margin * 2));
+            paint.setTextScaleX(xscale);
+        }
     }
 
-    private void setMeterSize() {
-        // Create a rect for the horizontal bar
-
-        barRect = new Rect(width / 36 - width / 2, -height / 64,
-                width / 2 - width / 36, height / 64);
-
-        // Create a matrix to scale the path,
-        // a bit narrower than the height
-
-        matrix.setScale(height / 24, height / 8);
-
-        // Scale the path
-
-        path.transform(matrix);
-
-        // Create animator
-
-        animator = ValueAnimator.ofInt(0, 10000);
-        animator.setRepeatCount(ValueAnimator.INFINITE);
-        animator.setRepeatMode(ValueAnimator.RESTART);
-        animator.setDuration(10000);
-
-        animator.addUpdateListener(this);
-        animator.start();
-    }
+    // On draw
 
     @Override
     @SuppressLint("DefaultLocale")
@@ -158,15 +106,9 @@ public class Display extends TunerView
 
         // No display if no audio
 
-        if (audio == null) {
+        if (audio == null)
             return;
-        }
-        drawNotes(canvas);
 
-        drawMeter(canvas);
-    }
-
-    private void drawNotes(Canvas canvas) {
         // Set up paint
 
         paint.setStrokeWidth(1);
@@ -178,16 +120,17 @@ public class Display extends TunerView
 
         // Set up text
 
-        paint.setTextSize(large);
+        paint.setTextSize(larger);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
 
         // Move down
 
-        canvas.translate((width/2) - (large/2), large);
+        canvas.translate(0, larger);
 
         // Draw note
-
-        canvas.drawText(notes[audio.note % OCTAVE], margin, 0, paint);
+        String note = notes[audio.note % OCTAVE];
+        float xTranslate = width/2 - paint.measureText(note)/2;
+        canvas.drawText(notes[audio.note % OCTAVE], xTranslate, 0, paint);
 
         // Measure text
 
@@ -195,107 +138,28 @@ public class Display extends TunerView
 
         // Draw sharps/flats
 
-        paint.setTextSize(large / 2);
+        paint.setTextSize(larger / 2);
         s = String.format("%s", sharps[audio.note % OCTAVE]);
         canvas.translate(0, paint.ascent());
-        canvas.drawText(s, margin + dx, 0, paint);
+        canvas.drawText(s, xTranslate + dx, 0, paint);
 
         // Draw octave
 
         s = String.format("%d", audio.note / OCTAVE);
         canvas.translate(0, -paint.ascent());
-        canvas.drawText(s, margin + dx, 0, paint);
+        canvas.drawText(s, xTranslate + dx, 0, paint);
+
+
+        paint.setStrokeWidth(2);
+        canvas.translate(0, large);
+        s = String.format("%4.2fHz", audio.frequency);
+        canvas.drawText(s, width/2 - paint.measureText(s)/2, 0, paint);
 
     }
 
-    private void drawMeter(Canvas canvas) {
-        // Reset the paint to black
+    // Log2
 
-        paint.setStrokeWidth(1);
-        paint.setColor(resources.getColor(android.R.color.primary_text_dark));
-        paint.setStyle(Style.FILL);
-
-        // Translate the canvas down
-        // and to the centre
-        canvas.translate(large/2, medium);
-
-        // Calculate x scale
-
-        float xscale = width / 11;
-
-        // Draw the scale legend
-
-        for (int i = 0; i <= 5; i++) {
-            String s = String.format("%d", i * 10);
-            float x = i * xscale;
-
-            paint.setTextAlign(Align.CENTER);
-            canvas.drawText(s, x, 0, paint);
-            canvas.drawText(s, -x, 0, paint);
-        }
-
-        // Wider lines for the scale
-
-        paint.setStrokeWidth(3);
-        paint.setStyle(Style.STROKE);
-        canvas.translate(0, medium / 1.5f);
-
-        // Draw the scale
-
-        for (int i = 0; i <= 5; i++) {
-            float x = i * xscale;
-
-            canvas.drawLine(x, 0, x, -medium / 2, paint);
-            canvas.drawLine(-x, 0, -x, -medium / 2, paint);
-        }
-
-        // Draw the fine scale
-
-        for (int i = 0; i <= 25; i++) {
-            float x = i * xscale / 5;
-
-            canvas.drawLine(x, 0, x, -medium / 4, paint);
-            canvas.drawLine(-x, 0, -x, -medium / 4, paint);
-        }
-
-        // Transform the canvas down
-        // for the meter pointer
-
-        canvas.translate(0, medium / 2.0f);
-
-        // Set the paint colour to grey
-
-        paint.setColor(resources.getColor(android.R.color.darker_gray));
-
-        // Draw the bar outline
-
-        paint.setStyle(Style.STROKE);
-        paint.setStrokeWidth(2);
-        canvas.drawRect(barRect, paint);
-
-        // Translate the canvas to
-        // the scaled cents value
-
-        canvas.translate((float) cents * (xscale / 10), -height / 64);
-
-        // Set up the paint for
-        // rounded corners
-
-        paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setStrokeJoin(Paint.Join.ROUND);
-
-        // Set fill style and fill
-        // the thumb
-
-        paint.setColor(resources.getColor(android.R.color.background_light));
-        paint.setStyle(Style.FILL);
-        canvas.drawPath(path, paint);
-
-        // Draw the thumb outline
-
-        paint.setStrokeWidth(3);
-        paint.setColor(resources.getColor(android.R.color.primary_text_dark));
-        paint.setStyle(Style.STROKE);
-        canvas.drawPath(path, paint);
+    protected double log2(double d) {
+        return Math.log(d) / Math.log(2.0);
     }
 }

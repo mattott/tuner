@@ -37,6 +37,7 @@ import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 
 // Meter
@@ -46,12 +47,14 @@ public class Meter extends TunerView
     private Matrix matrix;
     private Bitmap bitmap;
     private Rect barRect;
+    private RectF meterRect;
     private Path path;
 
     private ValueAnimator animator;
 
     private double cents;
     private float medium;
+    private int margin;
 
     // Constructor
 
@@ -86,6 +89,7 @@ public class Meter extends TunerView
 
         width = clipRect.right - clipRect.left;
         height = clipRect.bottom - clipRect.top;
+        margin = width / 32;
 
         // Recalculate text size
 
@@ -102,6 +106,9 @@ public class Meter extends TunerView
 
         barRect = new Rect(width / 36 - width / 2, -height / 64,
                 width / 2 - width / 36, height / 64);
+
+        meterRect = new RectF(margin, -width/2 + margin,
+                width - margin, width/2 - margin);
 
         // Create a matrix to scale the path,
         // a bit narrower than the height
@@ -126,7 +133,6 @@ public class Meter extends TunerView
     @Override
     public void onAnimationUpdate(ValueAnimator animator) {
         // Do the inertia calculation
-
         if (audio != null)
             cents = ((cents * 19.0) + audio.cents) / 20.0;
 
@@ -140,97 +146,33 @@ public class Meter extends TunerView
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (audio != null && audio.screen)
-            canvas.drawBitmap(bitmap, 2, height - bitmap.getHeight() - 2, null);
-
-        // Reset the paint to black
-
-        paint.setStrokeWidth(1);
+        paint.setStrokeWidth(6);
+        paint.setStyle(Style.STROKE);
         paint.setColor(resources.getColor(android.R.color.primary_text_dark));
-        paint.setStyle(Style.FILL);
 
-        // Translate the canvas down
-        // and to the centre
-
-        canvas.translate(width / 2, medium);
-
-        // Calculate x scale
+        canvas.translate(0, height/2 + height/3);
 
         float xscale = width / 11;
-
-        // Draw the scale legend
-
-        for (int i = 0; i <= 5; i++) {
-            String s = String.format("%d", i * 10);
-            float x = i * xscale;
-
-            paint.setTextAlign(Align.CENTER);
-            canvas.drawText(s, x, 0, paint);
-            canvas.drawText(s, -x, 0, paint);
-        }
-
-        // Wider lines for the scale
-
-        paint.setStrokeWidth(3);
-        paint.setStyle(Style.STROKE);
-        canvas.translate(0, medium / 1.5f);
+        float xLocation = (float) cents * (xscale / 10);
+        float radius = width/2 + 20 + margin;
+        float theta = (float) Math.asin(xLocation / radius);
+        float yLocation = (float)(radius * Math.cos(theta));
 
         // Draw the scale
+        canvas.drawArc(meterRect, 0, -180, false, paint);
+        canvas.drawLine(width/2, width/2 - 20, width/2, width/2 +20, paint);
 
-        for (int i = 0; i <= 5; i++) {
-            float x = i * xscale;
-
-            canvas.drawLine(x, 0, x, -medium / 2, paint);
-            canvas.drawLine(-x, 0, -x, -medium / 2, paint);
-        }
-
-        // Draw the fine scale
-
-        for (int i = 0; i <= 25; i++) {
-            float x = i * xscale / 5;
-
-            canvas.drawLine(x, 0, x, -medium / 4, paint);
-            canvas.drawLine(-x, 0, -x, -medium / 4, paint);
-        }
-
-        // Transform the canvas down
-        // for the meter pointer
-
-        canvas.translate(0, medium / 2.0f);
-
-        // Set the paint colour to grey
-
-        paint.setColor(resources.getColor(android.R.color.darker_gray));
-
-        // Draw the bar outline
-
-        paint.setStyle(Style.STROKE);
-        paint.setStrokeWidth(2);
-        canvas.drawRect(barRect, paint);
-
-        // Translate the canvas to
-        // the scaled cents value
-
-        canvas.translate((float) cents * (xscale / 10), -height / 64);
-
-        // Set up the paint for
-        // rounded corners
-
-        paint.setStrokeCap(Cap.ROUND);
-        paint.setStrokeJoin(Join.ROUND);
-
-        // Set fill style and fill
-        // the thumb
-
-        paint.setColor(resources.getColor(android.R.color.background_light));
+        // Draw the needle
+        canvas.drawLine(width/2, 0, xLocation + width/2, -yLocation, paint);
         paint.setStyle(Style.FILL);
-        canvas.drawPath(path, paint);
-
-        // Draw the thumb outline
-
-        paint.setStrokeWidth(3);
-        paint.setColor(resources.getColor(android.R.color.primary_text_dark));
+        canvas.drawCircle(width/2, 0, 5, paint);
+        // Draw the needle indicator
+        if (cents < 15 && cents > -15) {
+            paint.setColor(resources.getColor(android.R.color.holo_green_light));
+        } else {
+            paint.setColor(resources.getColor(android.R.color.holo_red_light));
+        }
         paint.setStyle(Style.STROKE);
-        canvas.drawPath(path, paint);
+        canvas.drawCircle(width/2, 0, 10, paint);
     }
 }

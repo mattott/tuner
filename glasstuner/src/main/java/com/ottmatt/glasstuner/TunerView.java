@@ -54,7 +54,7 @@ public abstract class TunerView extends View {
         paint.setAntiAlias(true);
         paint.setColor(resources.getColor(android.R.color.darker_gray));
         paint.setStyle(Paint.Style.STROKE);
-        canvas.drawRoundRect(outlineRect, 10, 10, paint);
+        //canvas.drawRoundRect(outlineRect, 10, 10, paint);
 
         // Set the cliprect
 

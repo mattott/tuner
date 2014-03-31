@@ -25,25 +25,30 @@ public class MainActivity extends Activity {
     private Audio audio;
     private Spectrum spectrum;
     private Display display;
+    private Meter meter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.glass_activity_main);
 
-        spectrum = (Spectrum) findViewById(org.billthefarmer.tuner.R.id.spectrum);
-        display = (Display) findViewById(org.billthefarmer.tuner.R.id.display);
+        //spectrum = (Spectrum) findViewById(R.id.spectrum);
+        display = (Display) findViewById(R.id.display);
+        meter = (Meter) findViewById(R.id.meter);
 
         // Create audio
         audio = new Audio(getResources(), spectrum, display);
 
         // Connect views to audio
 
-        if (spectrum != null)
-            spectrum.setAudio(audio);
+        //if (spectrum != null)
+        //    spectrum.setAudio(audio);
 
         if (display != null)
             display.setAudio(audio);
+
+        if (meter != null)
+            meter.setAudio(audio);
 
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, TAG);
@@ -125,7 +130,7 @@ public class MainActivity extends Activity {
             audio.input = Integer.parseInt(preferences.getString(PREF_INPUT, "0"));
             audio.reference = preferences.getInt(PREF_REFERENCE, 440);
             audio.filter = preferences.getBoolean(PREF_FILTER, false);
-            audio.downsample = preferences.getBoolean(PREF_DOWNSAMPLE, false);
+            audio.downsample = preferences.getBoolean(PREF_DOWNSAMPLE, true);
             audio.multiple = preferences.getBoolean(PREF_MULTIPLE, false);
             audio.screen = preferences.getBoolean(PREF_SCREEN, false);
             audio.strobe = preferences.getBoolean(PREF_STROBE, false);
